@@ -33,6 +33,6 @@ jobs:
           password: ${{ secrets.SERVER_PASSWORD }} 
           script: |
             cd /root/cd_docker_project
-            docker-compose pull
-            docker-compose down
-            docker-compose up -d
+            docker compose pull
+            docker compose down
+            docker compose up -d
