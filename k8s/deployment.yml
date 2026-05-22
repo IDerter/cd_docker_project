@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-app-deployment
+spec:
+  replicas: 2 # Изначально запускаем 2 копии
+  selector:
+    matchLabels:
+      app: flask-app
+  template:
+    metadata:
+      labels:
+        app: flask-app
+    spec:
+      containers:
+      - name: flask-app
+        image: dertert/cd_docker_project:latest
+        ports:
+        - containerPort: 5000
+        # КРИТИЧЕСКИ ВАЖНО: без указания лимитов ресурсов авто-масштабирование K8s не заработает!
+        resources:
+          limits:
+            cpu: "500m"
+          requests:
+            cpu: "200m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-app-service
+spec:
+  type: NodePort
+  selector:
+    app: flask-app
+  ports:
+    - port: 80
+      targetPort: 5000
+      nodePort: 30001
